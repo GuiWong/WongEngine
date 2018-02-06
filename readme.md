@@ -20,6 +20,8 @@ files:
 
 changelog:
 
+
+
 	0.0.1:			-first commit:
 	
 					Classes to handle Window
@@ -27,3 +29,8 @@ changelog:
 					
 					basic ui classes
 					menus, text
+					
+					
+	0.0.02:			-Tileset Class, read tileData from txt file
+	
+	
