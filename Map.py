@@ -66,6 +66,10 @@ class TilesetListener:
 
 
 
+	def __del__(self):
+
+		print 'listener destroyed'
+
 
 class Tile:
 
@@ -77,9 +81,7 @@ class Tile:
 		self.color=color
 		self.background=bkgnd_color
 
-	def __del__(self):
 
-		print "Tile deleted"
 
 
 class Tileset:
@@ -109,14 +111,23 @@ class Tileset:
 
 		libtcod.parser_delete(parser)
 
+	def create_tile(self,id):
+
+		return Tile(self.tile_data[id][3],self.tile_data[id][4],self.tile_data[id][2],libtcod.Color(*self.tile_data[id][5]),libtcod.Color(*self.tile_data[id][6]))
+
 class Map:
 
 	def __init__(self,width,height):
 
-		self.width=height
+		self.width=width
 		self.height=height
-		self.data=[[Tile(false,false,chr(219),libtcod.light_blue,libtcod.black) for Y in range(height)] for X in range(width)]
+		self.data=[[Tile(False,False,chr(219),libtcod.light_blue,libtcod.black) for X in range(width)] for Y in range(height)]
 
+	def get_tile(self,x,y):
+		return self.data[y][x]
+
+	def set_tile(self,x,y,tile):
+		self.data[y][x]=tile
 
 	def __del__(self):
 
