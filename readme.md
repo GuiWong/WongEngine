@@ -35,3 +35,7 @@ changelog:
 							-Tileset Class, read tileData from txt file
 
 							-Map class, create_tile method from tileset
+
+
+	0.0.03		(07,02,18)
+							-map saving and loading

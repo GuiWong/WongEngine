@@ -81,7 +81,13 @@ class Tile:
 		self.color=color
 		self.background=bkgnd_color
 
+	def set_id(self,id):
+		'''
+		meant to be used by create_tile() in Tileset classe
 
+		'''
+
+		self.id=id
 
 
 class Tileset:
@@ -125,7 +131,11 @@ class Tileset:
 
 	def create_tile(self,id):
 
-		return Tile(self.tile_data[id][3],self.tile_data[id][4],self.tile_data[id][2],libtcod.Color(*self.tile_data[id][5]),libtcod.Color(*self.tile_data[id][6]))
+
+		a= Tile(self.tile_data[id][3],self.tile_data[id][4],self.tile_data[id][2],libtcod.Color(*self.tile_data[id][5]),libtcod.Color(*self.tile_data[id][6]))
+		a.id=id
+		return a
+
 
 	def set_empty(self,id):
 		self.empty=id
@@ -149,6 +159,45 @@ class Map:
 	def set_tile(self,x,y,tile):
 		self.data[y][x]=tile
 
+	def save(self,name):
+
+
+		new_fichier=open('Saves/'+name +'.txt','w')
+		#:	;
+		string=''
+		string+=str(self.width)
+		string+=':'
+		string+=str(self.height)
+
+		string+=';'
+
+		for Y in range(self.height):
+			for X in range(self.width):
+				string += str(self.get_tile(X,Y).id)
+				string += ':'
+			string += ';'
+
+		new_fichier.write(string)
+
+		new_fichier.close()
+
+	def load(self,name,tileset):
+
+		fichier=open('Saves/'+name +'.txt','r')
+		data=fichier.read()
+		lines=data.split(';')
+		prop=lines[0].split(':')
+
+		self.width=int(prop[0])
+		self.height=int(prop[1])
+
+		for Y in range(self.height):
+			cels=lines[Y+1].split(':')
+			for X in range(self.width):
+
+				self.set_tile(X,Y,tileset.create_tile(int(cels[X])))
+
+		fichier.close()
 	def __del__(self):
 
 		print "Map deleted"
