@@ -104,10 +104,27 @@ class Simple_Menu(Ui_holder,Wui_elem):
 		self.height=i+1
 
 
+class Line_Menu(Simple_Menu):
 
+	def __init__(self,parent,width,height,name,id,pos=False):
 
+		Simple_Menu.__init__(self,parent,width,height,name,id,pos)
 
+	def build(self,con):
 
+		i=0
+
+		temp=libtcod.console_new(self.width,self.height)
+
+		for elem in self.content:
+			elem.build(temp)
+
+			libtcod.console_blit(temp,0,0,elem.width,elem.height,con,i,0)
+			i+= elem.width
+
+			libtcod.console_put_char_ex(con,i,0,chr(186),libtcod.white,libtcod.black)
+			i+=1
+			libtcod.console_clear(temp)
 
 
 
@@ -125,8 +142,8 @@ class Ui:
 		if type=='simple':			#TODO: change and automate this
 			menu=Simple_Menu(window,width,height,name,42,pos)
 
-		elif type=='folding':
-			return False
+		elif type=='line':
+			menu = Line_Menu(window,width,height,name,42,pos)
 
 		window.add_elem(menu)
 		return menu

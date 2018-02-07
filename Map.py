@@ -85,8 +85,17 @@ class Tile:
 
 
 class Tileset:
+	"""
+	class to handle tileset, load, store and access tiles properties
+
+	"""
 
 	def __init__(self,size):
+		"""
+		initialize Tileset object
+
+		:param size: the numer of different tiles handled
+		"""
 
 		self.tile_data=[0 for i in range(size)]
 
@@ -107,6 +116,8 @@ class Tileset:
 
 		libtcod.parser_run(parser,file,TilesetListener(self))
 
+		self.empty=0
+
 		print "ended"
 
 		libtcod.parser_delete(parser)
@@ -115,6 +126,10 @@ class Tileset:
 
 		return Tile(self.tile_data[id][3],self.tile_data[id][4],self.tile_data[id][2],libtcod.Color(*self.tile_data[id][5]),libtcod.Color(*self.tile_data[id][6]))
 
+	def set_empty(self,id):
+		self.empty=id
+	def get_empty(self):
+		return self.create_tile(self.empty)
 class Map:
 
 	def __init__(self,width,height):
@@ -122,6 +137,10 @@ class Map:
 		self.width=width
 		self.height=height
 		self.data=[[Tile(False,False,chr(219),libtcod.light_blue,libtcod.black) for X in range(width)] for Y in range(height)]
+
+	def empty(self,tileset):
+
+		self.data=[[tileset.get_empty() for X in range(self.width)] for Y in range(self.height)]
 
 	def get_tile(self,x,y):
 		return self.data[y][x]
