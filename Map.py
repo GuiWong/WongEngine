@@ -98,6 +98,7 @@ class Tileset:
 		"""
 
 		self.tile_data=[0 for i in range(size)]
+		self.size=size
 
 
 	def load(self,file):

@@ -130,8 +130,16 @@ class Line_Menu(Simple_Menu):
 
 #Main Class, used for all ui manipulations, and constant keeping
 class Ui:
+	"""
+	Main class of the Ui module
+	used as interface to Create ui component
+
+	"""
 
 	def __init__(self,palette):
+		"""
+		
+		"""
 
 		self.color=palette
 
