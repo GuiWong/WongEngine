@@ -19,6 +19,8 @@ class Wui_elem:
 
 
 		#TODO wrapping,colors, etc...
+
+
 class W_Text(Wui_elem):
 
 	def __init__(self,parent,width,height,text,pos=False):
@@ -38,10 +40,21 @@ class W_Text(Wui_elem):
 
 		return 1
 
+class W_Icon(Wui_elem):
+
+	def __init__(self,parent,char,color,bcg_color,pos=False):
+
+		Wui_elem.__init__(self,parent,1,1,pos)
+
+		self.char=char
+		self.color=color
+		self.bcg_color=bcg_color
 
 
+	def build(self,con):
 
-
+		libtcod.console_put_char_ex(con,0,0,self.char,self.color,self.bcg_color)
+		return 1
 
 
 class Ui_holder(Wui_elem):
@@ -138,7 +151,7 @@ class Ui:
 
 	def __init__(self,palette):
 		"""
-		
+
 		"""
 
 		self.color=palette
@@ -161,3 +174,9 @@ class Ui:
 		tex=W_Text(menu,1,1,text,pos)
 		menu.add_elem(tex)
 		return tex
+
+	def create_icon(self,menu,char,color,bcg_color,pos=False):
+
+		icon=W_Icon(menu,char,color,bcg_color,pos)
+		menu.add_elem(icon)
+		return icon
