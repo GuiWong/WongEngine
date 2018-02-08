@@ -13,6 +13,36 @@ class Wui_elem:
 		self.height=height
 		self.pos=pos
 
+	def set_pos(self,x,y):
+		'''called by parent when chainBuilduig
+		set the relative position to parent
+		'''
+		self.pos=[x,y]
+
+	def is_in(self,x,y):
+		'''Return true if the x,y tile is in the elem
+		note: elem store its x,y relative to parent
+		'''
+
+		if not self.pos:
+			return False
+		else:
+			return(self.pos[0] <= x and
+					self.pos[0] + self.width > x and
+					self.pos[1] <= y and
+					self.pos[1] +self.height > y)
+
+	def get_elem_by_mouse(self,x,y):
+		'''
+		parent method to get an elem by mouse position
+		:param x : mouse x pos relative to uiHolder
+		:param y : mouse y pos relative to uiHolder
+		:return : self (default behavior)
+		'''
+		return self
+
+
+
 	def __del__(self):
 
 		print "Wui object deleted"
@@ -57,6 +87,8 @@ class W_Icon(Wui_elem):
 		return 1
 
 
+
+
 class Ui_holder(Wui_elem):
 
 	def __init__(self):
@@ -68,7 +100,28 @@ class Ui_holder(Wui_elem):
 		self.content.append(elem)
 
 
+	def get_elem_by_mouse(self,x,y):
+		'''
+		parent method to get an elem by mouse position
+		:param x : mouse x pos relative to uiHolder
+		:param y : mouse y pos relative to uiHolder
+		'''
+		potential_elements=list()
+		for elem in self.content:
+			if elem.is_in(x,y):
+				potential_elements.append(elem)
 
+		print len(potential_elements)
+		if len(potential_elements)==1:
+			candidate=potential_elements[0]
+		elif len(potential_elements)==0:
+			return self
+		else:
+			candidate=potential_elements[len(potential_elements)-1]
+
+		result=candidate.get_elem_by_mouse(x-candidate.pos[0],y-candidate.pos[1])
+
+		return result
 	def __del__(self):
 
 		print "ui holder object deleted"
@@ -78,7 +131,7 @@ class Ui_holder(Wui_elem):
 
 
 
-class Simple_Menu(Ui_holder,Wui_elem):
+class Simple_Menu(Ui_holder):
 
 	def __init__(self,parent,width,height,name,id,pos=False):
 
@@ -87,6 +140,8 @@ class Simple_Menu(Ui_holder,Wui_elem):
 
 		self.name=name
 		self.id=id
+
+
 
 	def build(self,con):
 
@@ -108,6 +163,8 @@ class Simple_Menu(Ui_holder,Wui_elem):
 			print "built"
 			dh=elem.build(temp)
 			libtcod.console_blit(temp,0,0,elem.width,dh,con,1,i)
+			elem.set_pos(1,i)
+			print 'elem placed at', elem.pos
 
 			libtcod.console_clear(temp)
 			libtcod.console_put_char_ex(con,0,i,chr(26),libtcod.white,libtcod.black)
@@ -133,6 +190,7 @@ class Line_Menu(Simple_Menu):
 			elem.build(temp)
 
 			libtcod.console_blit(temp,0,0,elem.width,elem.height,con,i,0)
+			elem.set_pos(i,0)
 			i+= elem.width
 
 			libtcod.console_put_char_ex(con,i,0,chr(186),libtcod.white,libtcod.black)

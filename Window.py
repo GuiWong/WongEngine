@@ -5,7 +5,6 @@ import libtcodpy as libtcod
 import weakref
 
 
-
 #TODO handle more colors, easier acces
 class Palette:
 
@@ -88,6 +87,31 @@ class Main_Window(W_Window):
 		for window in self.sub_windows:
 			window.build()
 
+
+	def get_elem_by_mouse(self):
+		'''
+		return the Wui_elem/Window under the mouse
+		'''
+
+		potList=list()
+		x=self.parent().mouse.cx
+		y=self.parent().mouse.cy
+		for window in self.sub_windows:
+			if window.is_in(x,y):
+				potList.append(window)
+
+		if len(potList) != 1:
+			print 'Unimplemented yet, see Z-Levels for windows'
+			target=potList[len(potList)-1]
+		else:
+			target=potList[0]
+
+		result=target.get_elem_by_mouse(x-target.rx,y-target.ry)
+
+
+		return result
+
+
 	def render(self):
 
 		for window in self.sub_windows:
@@ -107,6 +131,25 @@ class Sub_Window(W_Window):
 		self.rx=rx
 		self.ry=ry
 		self.id=id
+
+	def get_elem_by_mouse(self,x,y):
+		'''
+		parent method to get an elem by mouse position
+		:param x : mouse x pos relative to window
+		:param y : mouse y pos relative to window
+		'''
+
+		return self
+
+	def is_in(self,x,y):
+		'''Return true if the x,y tile is in the window
+		note: window store its x,y relative to parent
+		'''
+
+		return (self.rx <= x and
+				self.rx + self.width > x and
+				self.ry <= y and
+				self.ry +self.height > y)
 
 
 class Simple_Window(Sub_Window):
@@ -150,6 +193,20 @@ class Simple_Window(Sub_Window):
 		else:
 			return self.get_palette().BLUE
 
+
+	def get_elem_by_mouse(self,x,y):
+		'''
+		method to get an elem by mouse position
+		chain to content
+		:param x : mouse x pos relative to window
+		:param y : mouse y pos relative to window
+		'''
+		if not self.content:
+			ret= self
+		else:
+			ret= self.content.get_elem_by_mouse(x-1,y-1)
+
+		return ret
 
 	def build(self):
 
@@ -203,6 +260,8 @@ class Folding_Window(Sub_Window):
 			libtcod.console_blit(temp,0,0,elem.width,elem.height,self.console,1,y)
 
 			y+=height
+
+
 
 	def render(self):
 
