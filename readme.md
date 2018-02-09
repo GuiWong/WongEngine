@@ -54,4 +54,11 @@ changelog:
 											-chain method to that elem
 											-return the result
 
-								
+	0.1.1			(09,02,18)
+
+							-Game_Shower class in Ui
+							handle map/entity Drawing
+
+							-new methods in Wong_Game:
+								add_entity(entity)
+								game_move_map(dx,dy)

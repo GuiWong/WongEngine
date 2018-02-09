@@ -51,6 +51,45 @@ class Wui_elem:
 		#TODO wrapping,colors, etc...
 
 
+class Game_Shower(Wui_elem):
+
+	def __init__(self,parent,width,height,game,pos=False):
+
+		Wui_elem.__init__(self,parent,width,height,pos)
+		self.game=game
+
+	def build(self,con):
+		#TODO handle map bigger than window
+
+		for Y in range(self.game.current_map.height):
+			for X in range(self.game.current_map.width):
+				libtcod.console_put_char_ex(con,X,Y,
+											self.game.current_map.get_tile(X,Y).char,
+											self.game.current_map.get_tile(X,Y).color,
+											self.game.current_map.get_tile(X,Y).background)
+
+	def get_elem_by_mouse(self,x,y):
+
+			#self.game.
+		return self
+
+	def update(self):
+
+		for Y in range(min(self.game.current_map.height-self.game.map_pos[1],self.height)):
+			for X in range(min(self.game.current_map.width-self.game.map_pos[0],self.width)):
+				x=X+self.game.map_pos[0]
+				y=Y+self.game.map_pos[1]
+				libtcod.console_put_char_ex(self.parent().console,X+1,Y+1,
+											self.game.current_map.get_tile(x,y).char,
+											self.game.current_map.get_tile(x,y).color,
+											self.game.current_map.get_tile(x,y).background)
+
+		for ent in self.game.active_entities:
+			libtcod.console_put_char_ex(self.parent().console,ent.x+1,ent.y+1,
+										ent.char,
+										ent.get_color(),
+										ent.get_bcg_color())
+
 class W_Text(Wui_elem):
 
 	def __init__(self,parent,width,height,text,pos=False):

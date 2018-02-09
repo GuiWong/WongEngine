@@ -149,6 +149,10 @@ class Map:
 		self.height=height
 		self.data=[[Tile(False,False,chr(219),libtcod.light_blue,libtcod.black) for X in range(width)] for Y in range(height)]
 
+		self.pathdata=libtcod.map_new(width,height)
+		self.path=libtcod.path_new_using_map(self.pathdata)
+
+
 	def empty(self,tileset):
 
 		self.data=[[tileset.get_empty() for X in range(self.width)] for Y in range(self.height)]
@@ -195,7 +199,9 @@ class Map:
 			cels=lines[Y+1].split(':')
 			for X in range(self.width):
 
-				self.set_tile(X,Y,tileset.create_tile(int(cels[X])))
+				tile=tileset.create_tile(int(cels[X]))
+				self.set_tile(X,Y,tile)
+				libtcod.map_set_properties(self.pathdata,X,Y,tile.view,tile.path)
 
 		fichier.close()
 	def __del__(self):
